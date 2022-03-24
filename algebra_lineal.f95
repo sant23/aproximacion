@@ -5,14 +5,14 @@ module lineal
     
     subroutine Gauss(A,B,X)
     
-        real(8), intent(inout)     :: A(:,:)
+        real(8), intent(in)     :: A(:,:)
         real(8), intent(in)     :: B(:)
         real(8), intent(inout)  :: X(:)
        
     
         ! Locales
         ! Es posible que haya que añadir variables locales para hacer pivote
-        real(8), allocatable    :: AB(:,:), V(:), P(:,:), aux(:)
+        real(8), allocatable    :: AB(:,:),  aux(:)
         real(8)                 :: m
         integer                 :: i,j,k,n, pos(1) 
     
@@ -31,37 +31,35 @@ module lineal
             ! Pivote parcial
             ! Completa el código para implementar el pivote parcial
     
-            if (abs(a(k,k))<epsilon(1.0)) then
+            if (abs(ab(k,k))<epsilon(1.0)) then
                 
-                pos = maxloc(abs(a(k+1:n,k)))
-                aux = A(k+pos(1),:)
-                if (abs(a(k+pos(1),k))<epsilon(1.d0)) then
+                pos = maxloc(abs(ab(k+1:n,k)))
+                aux = Ab(k+pos(1),:)
+                if (abs(ab(k+pos(1),k))<epsilon(1.d0)) then
                     write(*,*)'Sistema incompatible'
                     stop
                 end if 
-                A(k+pos(1),:) = A(K,:)
-                A(k,:)=aux 
+                Ab(k+pos(1),:) = Ab(K,:)
+                Ab(k,:)=aux 
     
             end if 
-    
-    
-    
-                
-    
-    
-    
-            ! ¿Qué ocurre si el elemento A(n,n)=0?
+                        ! ¿Qué ocurre si el elemento A(n,n)=0?
             do i = k+1, n !Bucle por las filas debajo de la diagonal 
-                m = A(i,k)/A(k,k) 
-                A(i,:) = A(i,:) + m*A(k,:)
+                m = -Ab(i,k)/Ab(k,k) 
+                Ab(i,:) = Ab(i,:) + m*Ab(k,:)
             enddo
         enddo
+       
+        if (abs(ab(n,n))<epsilon(1.d0)) then
+            write(*,*)'Sistema incompatible'
+            stop
+        end if
         
         ! Matriz Triangular
-        write(*,*) 'Comprobación Matriz Triangular'
-        do i = 1,n
-            write(*,fmt='(6(f7.2,1x))') AB(i,:)
-        enddo
+      !  write(*,*) 'Comprobación Matriz Triangular'
+      !  do i = 1,n
+        !    write(*,fmt='(6(f7.2,1x))') AB(i,:)
+        !enddo
     
         ! II.- Sustitución
         ! Bucle por elementos en la diagonal de abajo a arriba
